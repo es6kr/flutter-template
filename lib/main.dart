@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
-  runApp(const MyApp());
+  await dotenv.load(fileName: '.env');
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = dotenv.get('SENTRY_DSN');
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
